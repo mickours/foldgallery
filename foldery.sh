@@ -40,9 +40,9 @@ do
    then
       pictitle=$(basename "$picture")
 
-      if [ -z "$(file -i \"$picture\" | grep video)" ]
+      if $(file -i "$picture" | grep -q video);
       then
-          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic".jpg
+          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic.jpg"
       else
         # Uncomment one of the four paragraphs below to achieve different effects.
         # (Only have one paragraph at a time uncommented).
@@ -117,10 +117,12 @@ do
 
     pictitle=$picture
 
-    if [ -z "$(file -i \"$picture\" | grep video)" ]
+    if $(file -i "$picture" | grep -q video);
     then
-      echo "<a href=\"$folder/$picture\"><img src=$thumbpic.jpg alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
+      # this is a video
+      echo "<a href=\"$folder/$picture\"><img src="$thumbpic.jpg" alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
     else
+      # this is an image
       echo "<a href=\"$folder/$picture\"><img src=$thumbpic alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
     fi
 done
