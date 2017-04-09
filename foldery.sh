@@ -31,7 +31,7 @@ pushd "$folder"
 for picture in $pictures
 do
    echo Processing file $picture
-   thumbpic="$thumbs_abs_path/thumb_$picture"
+   thumbpic="$thumbs_abs_path/${picture}_thumb.jpg"
 
    #
    # If no thumnail image exists for picture, create one...
@@ -42,7 +42,7 @@ do
 
       if $(file -i "$picture" | grep -q video);
       then
-          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic.jpg"
+          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic"
       else
         # Uncomment one of the four paragraphs below to achieve different effects.
         # (Only have one paragraph at a time uncommented).
@@ -113,14 +113,14 @@ cat > "$gallery" <<%
 
 for picture in $pictures
 do
-    thumbpic="$thumbs/thumb_$picture"
+    thumbpic="$thumbs/${picture}_thumb.jpg"
 
     pictitle=$picture
 
-    if $(file -i "$picture" | grep -q video);
+    if $(file -i "$folder/$picture" | grep -q video);
     then
       # this is a video
-      echo "<a href=\"$folder/$picture\"><img src="$thumbpic.jpg" alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
+      echo "<a href=\"$folder/$picture\"><img src="$thumbpic" alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
     else
       # this is an image
       echo "<a href=\"$folder/$picture\"><img src=$thumbpic alt=$thumbpic title=\"$pictitle\"></a>" >> "$gallery"
