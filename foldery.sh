@@ -7,7 +7,19 @@
 # Based on the work of J McDonnell
 #
 
-set -o errno
+set -o errexit
+set -o nounset
+set -o pipefail
+# debug
+#set -o xtrace
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+function ctrl_c() {
+    echo "Exiting"
+    exit 1
+}
 
 folder=$1
 
@@ -17,12 +29,15 @@ then
    exit
 fi
 
+# Set magic variables for current file & dir
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 zipfile="$folder.zip"
 thumbs="thumbs"
-thumbs_abs_path="$PWD/$thumbs"
+thumbs_abs_path="$__dir/$thumbs"
 gallery="$folder.html"
-root_path="$PWD"
-img=$PWD
+root_path="$__dir"
+img=$__dir
 pictures=$(ls "$folder" | egrep -i "jpg$|jpeg$|mp4$|avi$" | egrep -v 'thumb')
 
 #
@@ -47,7 +62,7 @@ do
 
       if $(file -i "$picture" | grep -q video);
       then
-          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic"
+          ffmpeg -i "$picture" -t 2 -r 0.5 "$thumbpic" >/dev/null
           is_video=$picture
           picture=$thumbpic
       fi
